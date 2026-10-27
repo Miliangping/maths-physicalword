@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>数理词汇 MathLex · 数学 & 物理</title>
+<style>
+:root{
+  --bg:#f7f8fc; --card:#fff; --primary:#4f46e5; --primary-dark:#3730a3;
+  --text:#1e1b4b; --muted:#6b7280; --border:#e5e7eb;
+  --green:#10b981; --amber:#f59e0b; --red:#ef4444;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.6;padding:20px 14px 60px;}
+#app{max-width:720px;margin:0 auto;}
+.hero{text-align:center;margin-bottom:22px;}
+.hero h1{font-size:23px;margin:0 0 6px;}
+.hero p{color:var(--muted);margin:0;font-size:13px;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px 20px;margin-bottom:14px;}
+.card-title{font-size:15px;font-weight:700;margin:0 0 12px;display:flex;align-items:center;gap:8px;}
+.btn{border:none;border-radius:10px;padding:10px 18px;font-size:14px;cursor:pointer;font-family:inherit;transition:.15s;background:#fff;color:var(--text);border:1px solid var(--border);}
+.btn:active{transform:scale(.97);}
+.btn-primary{background:var(--primary);color:#fff;border-color:var(--primary);}
+.btn-primary:active{background:var(--primary-dark);}
+.btn-ghost{background:#fff;}
+.btn-ghost:active{background:#f3f4f6;}
+.btn-sm{padding:7px 14px;font-size:13px;border-radius:8px;}
+.btn-block{width:100%;display:block;}
+.subject-tabs{display:flex;gap:8px;margin-bottom:18px;background:#eef0f6;border-radius:12px;padding:4px;}
+.subject-tab{flex:1;text-align:center;padding:10px;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;color:var(--muted);transition:.15s;border:none;background:transparent;font-family:inherit;}
+.subject-tab.active{background:#fff;color:var(--primary);box-shadow:0 2px 8px rgba(79,70,229,.12);}
+.overview{display:flex;justify-content:space-around;text-align:center;padding:10px 0;}
+.overview .num{font-size:22px;font-weight:800;color:var(--primary);}
+.overview .num small{font-size:13px;font-weight:500;color:var(--muted);}
+.overview .label{font-size:12px;color:var(--muted);margin-top:2px;}
+.all-card{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#eef2ff,#f5f3ff);border:1px solid #c7d2fe;border-radius:14px;padding:16px 20px;margin-bottom:14px;cursor:pointer;transition:.15s;}
+.all-card:active{transform:scale(.99);}
+.all-card .icon{font-size:24px;}
+.all-card .body{flex:1;}
+.all-card .body .t{font-size:15px;font-weight:700;color:var(--primary-dark);}
+.all-card .body .s{font-size:12.5px;color:var(--muted);margin-top:2px;}
+.all-card .arrow{color:var(--primary);font-size:18px;}
+.domain-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
+.domain-card{background:#fafafe;border:1px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;transition:.15s;}
+.domain-card:active{background:#eef2ff;border-color:var(--primary);}
+.domain-card .name{font-size:14px;font-weight:600;}
+.domain-card .meta{font-size:12px;color:var(--muted);margin-top:4px;}
+.progress-bar{height:6px;background:#e5e7eb;border-radius:3px;overflow:hidden;margin-top:6px;}
+.progress-bar > span{display:block;height:100%;background:var(--primary);border-radius:3px;transition:width .3s;}
+.learn-tabs{display:flex;gap:8px;margin-bottom:14px;background:#eef0f6;border-radius:12px;padding:4px;}
+.learn-tab{flex:1;text-align:center;padding:9px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;color:var(--muted);transition:.15s;border:none;background:transparent;font-family:inherit;}
+.learn-tab.active{background:#fff;color:var(--primary);box-shadow:0 2px 8px rgba(79,70,229,.12);}
+.control-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px;font-size:12.5px;color:var(--muted);}
+.dir-switch{display:inline-flex;background:#eef0f6;border-radius:8px;padding:3px;gap:2px;}
+.dir-btn{border:none;background:transparent;padding:5px 12px;border-radius:6px;font-size:12.5px;cursor:pointer;font-family:inherit;color:var(--muted);font-weight:600;}
+.dir-btn.active{background:#fff;color:var(--primary);box-shadow:0 1px 4px rgba(79,70,229,.15);}
+
+/* ============ 闪卡 3D 翻转 ============ */
+.flashcard-wrap{perspective:1200px;margin-bottom:18px;transition:transform .15s ease;}
+.flashcard-wrap:active{transform:scale(.985);}
+.flashcard{
+  display:grid;
+  min-height:280px;
+  transform-style:preserve-3d;
+  -webkit-transform-style:preserve-3d;
+  transition:transform .7s cubic-bezier(.35,.1,.25,1);
+  cursor:pointer;
+  will-change:transform;
+}
+.flashcard.flipped{transform:rotateY(180deg);}
+.flashcard .face{
+  grid-area:1 / 1;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:26px 22px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  overflow:hidden;
+}
+.flashcard .front{
+  background:var(--card);
+  box-shadow:0 4px 16px rgba(30,27,75,.06);
+}
+.flashcard .back{
+  transform:rotateY(180deg);
+  -webkit-transform:rotateY(180deg);
+  background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%);
+  border-color:transparent;
+  color:#fff;
+  box-shadow:0 14px 36px rgba(79,70,229,.38);
+}
+
+.big-word{font-size:26px;font-weight:800;color:var(--primary);margin:0;word-break:break-word;line-height:1.3;}
+.pos{font-size:13px;color:var(--muted);font-style:italic;margin-top:6px;}
+.tap-hint{font-size:12px;color:var(--muted);margin-top:12px;}
+
+/* 背面：蓝色背景上的文字配色 */
+.back-term{font-size:22px;font-weight:800;color:#fff;word-break:break-word;line-height:1.3;text-shadow:0 1px 3px rgba(0,0,0,.12);}
+.back-pos{font-size:12.5px;color:rgba(255,255,255,.78);font-style:italic;margin:4px 0 8px;}
+.back-zh{font-size:18px;font-weight:700;color:#fff;margin-bottom:10px;word-break:break-word;text-shadow:0 1px 3px rgba(0,0,0,.12);}
+.flashcard .back .example{font-size:13px;color:rgba(255,255,255,.92);line-height:1.55;max-width:96%;}
+.flashcard .back .example em{color:#fef3c7;font-style:normal;font-weight:700;}
+
+.flashcard-actions{display:flex;gap:10px;margin-top:6px;}
+.flashcard-actions .btn{flex:1;}
+.quiz-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px 20px;margin-bottom:14px;}
+.quiz-prompt{font-size:24px;font-weight:800;color:var(--primary);text-align:center;margin:0 0 4px;word-break:break-word;}
+.quiz-hint{font-size:12.5px;color:var(--muted);text-align:center;margin-bottom:16px;}
+.quiz-option{display:block;width:100%;text-align:left;padding:12px 16px;border-radius:10px;border:1px solid var(--border);background:#fff;margin-bottom:8px;font-size:14px;cursor:pointer;font-family:inherit;transition:.12s;}
+.quiz-option:active{background:#f3f4f6;}
+.quiz-option.correct{background:#ecfdf5;border-color:var(--green);color:#047857;font-weight:600;}
+.quiz-option.wrong{background:#fef2f2;border-color:var(--red);color:#b91c1c;}
+.quiz-option:disabled{cursor:default;}
+.quiz-input-wrap{display:flex;gap:8px;margin-top:14px;}
+.quiz-input{flex:1;padding:13px 16px;border:1px solid var(--border);border-radius:10px;font-size:16px;font-family:inherit;outline:none;background:#fff;}
+.quiz-input:focus{border-color:var(--primary);background:#f8faff;}
+.quiz-input:disabled{background:#f9fafb;color:var(--muted);}
+.feedback{margin-top:14px;font-size:13.5px;}
+.feedback .ok{color:var(--green);font-weight:700;}
+.feedback .no{color:var(--red);font-weight:700;}
+.feedback .exp{color:var(--muted);margin-top:6px;font-size:13px;}
+.group-title{font-size:13.5px;font-weight:700;color:var(--primary-dark);margin:16px 0 4px;padding-left:8px;border-left:3px solid var(--primary);}
+.word-item{display:flex;align-items:center;gap:12px;padding:11px 4px;border-top:1px solid var(--border);cursor:pointer;}
+.word-item:first-of-type{border-top:none;}
+.word-num{flex:none;width:26px;font-size:12px;color:var(--muted);text-align:right;}
+.word-text{flex:1;font-size:14px;word-break:break-word;}
+.word-text .en{font-weight:700;}
+.word-text .zh{font-weight:500;color:#4b5563;}
+.word-text .sep{color:#d1d5db;margin:0 8px;}
+.word-status{flex:none;width:10px;height:10px;border-radius:50%;background:#e5e7eb;}
+.word-status.learning{background:var(--amber);}
+.word-status.mastered{background:var(--green);}
+.tag{display:inline-block;background:#eef2ff;color:var(--primary);border-radius:6px;padding:2px 10px;font-size:12px;}
+.topbar{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+.topbar .right{margin-left:auto;display:flex;gap:8px;align-items:center;}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+/* =========================================================
+   数据层
+   ========================================================= */
+const DATA = {
+  "数学": {
+    icon: "📐",
+    domains: {
+      "数与运算": [
+        {term:"integer",pos:"n.",zh:"整数",example:"The set of <em>integers</em> includes positive, negative, and zero."},
+        {term:"fraction",pos:"n.",zh:"分数",example:"A <em>fraction</em> represents a part of a whole."},
+        {term:"decimal",pos:"n.",zh:"小数",example:"0.75 is the <em>decimal</em> form of three quarters."},
+        {term:"percentage",pos:"n.",zh:"百分比",example:"Fifty <em>percent</em> equals one half."},
+        {term:"ratio",pos:"n.",zh:"比例",example:"The <em>ratio</em> of boys to girls is 3 to 2."},
+        {term:"proportion",pos:"n.",zh:"比例；比率",example:"A <em>proportion</em> states two ratios are equal."},
+        {term:"square root",pos:"n.",zh:"平方根",example:"The <em>square root</em> of 16 is 4."},
+        {term:"cube root",pos:"n.",zh:"立方根",example:"The <em>cube root</em> of 27 is 3."},
+        {term:"exponent",pos:"n.",zh:"指数",example:"In 2³, the <em>exponent</em> is 3."},
+        {term:"power",pos:"n.",zh:"幂",example:"Two to the fifth <em>power</em> is 32."},
+        {term:"prime number",pos:"n.",zh:"质数",example:"A <em>prime number</em> has exactly two positive divisors."},
+        {term:"composite number",pos:"n.",zh:"合数",example:"A <em>composite number</em> has more than two divisors."},
+        {term:"factor",pos:"n.",zh:"因数",example:"The <em>factors</em> of 12 are 1, 2, 3, 4, 6, and 12."},
+        {term:"multiple",pos:"n.",zh:"倍数",example:"The first <em>multiple</em> of 7 is 7."},
+        {term:"odd number",pos:"n.",zh:"奇数",example:"An <em>odd number</em> is not divisible by 2."},
+        {term:"even number",pos:"n.",zh:"偶数",example:"An <em>even number</em> is divisible by 2."},
+        {term:"absolute value",pos:"n.",zh:"绝对值",example:"The <em>absolute value</em> of −5 is 5."},
+        {term:"reciprocal",pos:"n.",zh:"倒数",example:"The <em>reciprocal</em> of 3 is 1/3."},
+        {term:"scientific notation",pos:"n.",zh:"科学记数法",example:"3 × 10⁸ is written in <em>scientific notation</em>."},
+        {term:"rounding",pos:"n.",zh:"四舍五入",example:"<em>Rounding</em> 3.6 gives 4."}
+      ],
+      "代数": [
+        {term:"variable",pos:"n.",zh:"变量",example:"A <em>variable</em> represents an unknown value."},
+        {term:"constant",pos:"n.",zh:"常数",example:"In y = 3x + 2, the <em>constant</em> is 2."},
+        {term:"expression",pos:"n.",zh:"表达式",example:"An <em>expression</em> combines variables and constants."},
+        {term:"equation",pos:"n.",zh:"方程",example:"Solve the <em>equation</em> 2x + 5 = 11."},
+        {term:"inequality",pos:"n.",zh:"不等式",example:"The <em>inequality</em> x > 3 means all numbers greater than 3."},
+        {term:"function",pos:"n.",zh:"函数",example:"A <em>function</em> assigns each input one output."},
+        {term:"domain",pos:"n.",zh:"定义域",example:"The <em>domain</em> of f(x) = 1/x excludes 0."},
+        {term:"range",pos:"n.",zh:"值域",example:"The <em>range</em> of f(x) = x² is all nonnegative numbers."},
+        {term:"linear function",pos:"n.",zh:"一次函数",example:"A <em>linear function</em> has form y = mx + b."},
+        {term:"quadratic function",pos:"n.",zh:"二次函数",example:"A <em>quadratic function</em> has form y = ax² + bx + c."},
+        {term:"polynomial",pos:"n.",zh:"多项式",example:"A <em>polynomial</em> is a sum of terms."},
+        {term:"factorization",pos:"n.",zh:"因式分解",example:"<em>Factorization</em> writes a polynomial as a product."},
+        {term:"expansion",pos:"n.",zh:"展开",example:"<em>Expansion</em> multiplies out brackets."},
+        {term:"slope",pos:"n.",zh:"斜率",example:"The <em>slope</em> measures steepness."},
+        {term:"intercept",pos:"n.",zh:"截距",example:"The y-<em>intercept</em> is where the line crosses the y-axis."},
+        {term:"root",pos:"n.",zh:"根；零点",example:"The <em>roots</em> of x² − 4 = 0 are 2 and −2."},
+        {term:"solution",pos:"n.",zh:"解",example:"The <em>solution</em> satisfies the equation."},
+        {term:"identity",pos:"n.",zh:"恒等式",example:"sin²θ + cos²θ = 1 is an <em>identity</em>."},
+        {term:"arithmetic progression",pos:"n.",zh:"等差数列",example:"An <em>arithmetic progression</em> has constant difference."},
+        {term:"geometric progression",pos:"n.",zh:"等比数列",example:"A <em>geometric progression</em> has constant ratio."},
+        {term:"summation",pos:"n.",zh:"求和",example:"<em>Summation</em> adds a sequence of terms."},
+        {term:"series",pos:"n.",zh:"级数",example:"The infinite <em>series</em> 1 + 1/2 + 1/4 + … equals 2."},
+        {term:"exponential function",pos:"n.",zh:"指数函数",example:"An <em>exponential function</em> has form y = aˣ."},
+        {term:"logarithmic function",pos:"n.",zh:"对数函数",example:"A <em>logarithmic function</em> is the inverse of exponential."},
+        {term:"composite function",pos:"n.",zh:"复合函数",example:"A <em>composite function</em> applies one to another."},
+        {term:"inverse function",pos:"n.",zh:"反函数",example:"An <em>inverse function</em> undoes the original."},
+        {term:"parameter",pos:"n.",zh:"参数",example:"A <em>parameter</em> is a constant defining a family."},
+        {term:"algebraic expression",pos:"n.",zh:"代数式",example:"An <em>algebraic expression</em> has numbers and variables."},
+        {term:"equivalent equations",pos:"n.",zh:"同解方程",example:"<em>Equivalent equations</em> share the same solutions."},
+        {term:"algebraic operation",pos:"n.",zh:"代数运算",example:"Addition is a basic <em>algebraic operation</em>."}
+      ],
+      "几何": [
+        {term:"point",pos:"n.",zh:"点",example:"A <em>point</em> has position but no size."},
+        {term:"line",pos:"n.",zh:"直线",example:"A <em>line</em> extends infinitely both ways."},
+        {term:"ray",pos:"n.",zh:"射线",example:"A <em>ray</em> has one endpoint."},
+        {term:"segment",pos:"n.",zh:"线段",example:"A <em>segment</em> has two endpoints."},
+        {term:"angle",pos:"n.",zh:"角",example:"An <em>angle</em> is formed by two rays."},
+        {term:"triangle",pos:"n.",zh:"三角形",example:"The angles of a <em>triangle</em> sum to 180°."},
+        {term:"quadrilateral",pos:"n.",zh:"四边形",example:"A <em>quadrilateral</em> has four sides."},
+        {term:"polygon",pos:"n.",zh:"多边形",example:"A regular <em>polygon</em> has equal sides and angles."},
+        {term:"circle",pos:"n.",zh:"圆",example:"The area of a <em>circle</em> is πr²."},
+        {term:"radius",pos:"n.",zh:"半径",example:"The <em>radius</em> is half the diameter."},
+        {term:"diameter",pos:"n.",zh:"直径",example:"The <em>diameter</em> passes through the center."},
+        {term:"circumference",pos:"n.",zh:"周长",example:"The <em>circumference</em> of a circle is 2πr."},
+        {term:"area",pos:"n.",zh:"面积",example:"The <em>area</em> of a rectangle is length × width."},
+        {term:"volume",pos:"n.",zh:"体积",example:"The <em>volume</em> of a cube is s³."},
+        {term:"surface area",pos:"n.",zh:"表面积",example:"The <em>surface area</em> of a sphere is 4πr²."},
+        {term:"parallel",pos:"adj.",zh:"平行的",example:"<em>Parallel</em> lines never intersect."},
+        {term:"perpendicular",pos:"adj.",zh:"垂直的",example:"<em>Perpendicular</em> lines meet at 90°."},
+        {term:"intersection",pos:"n.",zh:"交点；相交",example:"The <em>intersection</em> of two lines is a point."},
+        {term:"congruence",pos:"n.",zh:"全等",example:"<em>Congruence</em> means same shape and size."},
+        {term:"similarity",pos:"n.",zh:"相似",example:"<em>Similarity</em> means same shape, maybe different size."},
+        {term:"Pythagorean theorem",pos:"n.",zh:"勾股定理",example:"The <em>Pythagorean theorem</em> states a² + b² = c²."},
+        {term:"coordinate",pos:"n.",zh:"坐标",example:"A point is located by its <em>coordinates</em>."},
+        {term:"origin",pos:"n.",zh:"原点",example:"The <em>origin</em> is (0, 0)."},
+        {term:"midpoint",pos:"n.",zh:"中点",example:"The <em>midpoint</em> divides a segment into two equal halves."},
+        {term:"distance formula",pos:"n.",zh:"距离公式",example:"The <em>distance formula</em> comes from the Pythagorean theorem."}
+      ],
+      "三角学": [
+        {term:"sine",pos:"n.",zh:"正弦",example:"The <em>sine</em> of 30° is 0.5."},
+        {term:"cosine",pos:"n.",zh:"余弦",example:"The <em>cosine</em> of 60° is 0.5."},
+        {term:"tangent",pos:"n.",zh:"正切",example:"The <em>tangent</em> of 45° is 1."},
+        {term:"cotangent",pos:"n.",zh:"余切",example:"<em>Cotangent</em> is the reciprocal of tangent."},
+        {term:"secant",pos:"n.",zh:"正割",example:"<em>Secant</em> is the reciprocal of cosine."},
+        {term:"cosecant",pos:"n.",zh:"余割",example:"<em>Cosecant</em> is the reciprocal of sine."},
+        {term:"radian",pos:"n.",zh:"弧度",example:"A full circle is 2π <em>radians</em>."},
+        {term:"degree",pos:"n.",zh:"角度",example:"A right angle is 90 <em>degrees</em>."},
+        {term:"unit circle",pos:"n.",zh:"单位圆",example:"The <em>unit circle</em> has radius 1 centered at origin."},
+        {term:"period",pos:"n.",zh:"周期",example:"The <em>period</em> of sine is 2π."},
+        {term:"amplitude",pos:"n.",zh:"振幅",example:"The <em>amplitude</em> of y = 3 sin x is 3."},
+        {term:"trigonometric identity",pos:"n.",zh:"三角恒等式",example:"sin²θ + cos²θ = 1 is a <em>trigonometric identity</em>."},
+        {term:"law of sines",pos:"n.",zh:"正弦定理",example:"The <em>law of sines</em> relates sides to opposite angles."},
+        {term:"law of cosines",pos:"n.",zh:"余弦定理",example:"The <em>law of cosines</em> generalizes the Pythagorean theorem."},
+        {term:"inverse trigonometric function",pos:"n.",zh:"反三角函数",example:"arcsin is an <em>inverse trigonometric function</em>."}
+      ],
+      "微积分": [
+        {term:"limit",pos:"n.",zh:"极限",example:"The <em>limit</em> of 1/n as n → ∞ is 0."},
+        {term:"continuity",pos:"n.",zh:"连续性",example:"<em>Continuity</em> means the function has no breaks."},
+        {term:"derivative",pos:"n.",zh:"导数",example:"The <em>derivative</em> measures instantaneous rate of change."},
+        {term:"differential",pos:"n.",zh:"微分",example:"The <em>differential</em> dx is an infinitesimal change."},
+        {term:"integral",pos:"n.",zh:"积分",example:"A definite <em>integral</em> gives signed area under a curve."},
+        {term:"indefinite integral",pos:"n.",zh:"不定积分",example:"An <em>indefinite integral</em> includes a constant of integration."},
+        {term:"definite integral",pos:"n.",zh:"定积分",example:"A <em>definite integral</em> has limits of integration."},
+        {term:"antiderivative",pos:"n.",zh:"原函数",example:"An <em>antiderivative</em> of x² is x³/3."},
+        {term:"tangent line",pos:"n.",zh:"切线",example:"The <em>tangent line</em> touches a curve at one point."},
+        {term:"normal line",pos:"n.",zh:"法线",example:"The <em>normal line</em> is perpendicular to the tangent."},
+        {term:"extremum",pos:"n.",zh:"极值",example:"An <em>extremum</em> is a maximum or minimum."},
+        {term:"maximum",pos:"n.",zh:"最大值",example:"A local <em>maximum</em> is higher than nearby points."},
+        {term:"minimum",pos:"n.",zh:"最小值",example:"A local <em>minimum</em> is lower than nearby points."},
+        {term:"critical point",pos:"n.",zh:"临界点",example:"A <em>critical point</em> has zero or undefined derivative."},
+        {term:"inflection point",pos:"n.",zh:"拐点",example:"An <em>inflection point</em> is where concavity changes."},
+        {term:"concavity",pos:"n.",zh:"凹凸性",example:"<em>Concavity</em> describes whether a curve opens up or down."},
+        {term:"chain rule",pos:"n.",zh:"链式法则",example:"The <em>chain rule</em> differentiates composite functions."},
+        {term:"product rule",pos:"n.",zh:"乘积法则",example:"The <em>product rule</em> states (uv)' = u'v + uv'."},
+        {term:"quotient rule",pos:"n.",zh:"商法则",example:"The <em>quotient rule</em> differentiates a ratio."},
+        {term:"L'Hôpital's rule",pos:"n.",zh:"洛必达法则",example:"<em>L'Hôpital's rule</em> evaluates indeterminate limits."},
+        {term:"Taylor series",pos:"n.",zh:"泰勒级数",example:"A <em>Taylor series</em> expands a function around a point."},
+        {term:"Maclaurin series",pos:"n.",zh:"麦克劳林级数",example:"A <em>Maclaurin series</em> is Taylor at 0."},
+        {term:"convergence",pos:"n.",zh:"收敛",example:"<em>Convergence</em> means partial sums approach a finite limit."},
+        {term:"divergence",pos:"n.",zh:"发散",example:"<em>Divergence</em> means no finite limit exists."},
+        {term:"partial derivative",pos:"n.",zh:"偏导数",example:"A <em>partial derivative</em> differentiates by one variable."},
+        {term:"gradient",pos:"n.",zh:"梯度",example:"The <em>gradient</em> points toward steepest increase."},
+        {term:"multiple integral",pos:"n.",zh:"重积分",example:"A <em>multiple integral</em> integrates over several variables."},
+        {term:"line integral",pos:"n.",zh:"线积分",example:"A <em>line integral</em> integrates along a curve."},
+        {term:"surface integral",pos:"n.",zh:"曲面积分",example:"A <em>surface integral</em> integrates over a surface."},
+        {term:"fundamental theorem of calculus",pos:"n.",zh:"微积分基本定理",example:"The <em>fundamental theorem of calculus</em> links derivatives and integrals."}
+      ],
+      "线性代数": [
+        {term:"matrix",pos:"n.",zh:"矩阵",example:"A <em>matrix</em> is a rectangular array of numbers."},
+        {term:"determinant",pos:"n.",zh:"行列式",example:"A nonzero <em>determinant</em> means the matrix is invertible."},
+        {term:"vector",pos:"n.",zh:"向量",example:"A <em>vector</em> has magnitude and direction."},
+        {term:"scalar",pos:"n.",zh:"标量",example:"A <em>scalar</em> is a single number."},
+        {term:"eigenvalue",pos:"n.",zh:"特征值",example:"The <em>eigenvalue</em> satisfies det(A − λI) = 0."},
+        {term:"eigenvector",pos:"n.",zh:"特征向量",example:"An <em>eigenvector</em> changes only by a scalar factor."},
+        {term:"identity matrix",pos:"n.",zh:"单位矩阵",example:"The <em>identity matrix</em> has ones on the diagonal."},
+        {term:"transpose",pos:"n.",zh:"转置",example:"The <em>transpose</em> swaps rows and columns."},
+        {term:"inverse matrix",pos:"n.",zh:"逆矩阵",example:"The <em>inverse matrix</em> satisfies AA⁻¹ = I."},
+        {term:"rank",pos:"n.",zh:"秩",example:"The <em>rank</em> is the dimension of the column space."},
+        {term:"trace",pos:"n.",zh:"迹",example:"The <em>trace</em> is the sum of diagonal entries."},
+        {term:"linear transformation",pos:"n.",zh:"线性变换",example:"A <em>linear transformation</em> preserves addition and scaling."},
+        {term:"basis",pos:"n.",zh:"基",example:"A <em>basis</em> is a linearly independent spanning set."},
+        {term:"dimension",pos:"n.",zh:"维数",example:"The <em>dimension</em> is the number of basis vectors."},
+        {term:"span",pos:"n.",zh:"张成",example:"The <em>span</em> is all linear combinations of vectors."},
+        {term:"linear independence",pos:"n.",zh:"线性无关",example:"<em>Linear independence</em> means no vector is a combination of others."},
+        {term:"orthogonal",pos:"adj.",zh:"正交的",example:"Two vectors are <em>orthogonal</em> if their dot product is zero."},
+        {term:"orthonormal",pos:"adj.",zh:"标准正交的",example:"An <em>orthonormal</em> set consists of orthogonal unit vectors."},
+        {term:"dot product",pos:"n.",zh:"点积",example:"The <em>dot product</em> equals |a||b|cosθ."},
+        {term:"cross product",pos:"n.",zh:"叉积",example:"The <em>cross product</em> gives a perpendicular vector."},
+        {term:"norm",pos:"n.",zh:"范数",example:"The <em>norm</em> of a vector is its length."},
+        {term:"null space",pos:"n.",zh:"零空间",example:"The <em>null space</em> contains vectors mapped to zero."},
+        {term:"column space",pos:"n.",zh:"列空间",example:"The <em>column space</em> is the span of the columns."},
+        {term:"row space",pos:"n.",zh:"行空间",example:"The <em>row space</em> is the span of the rows."},
+        {term:"diagonalizable",pos:"adj.",zh:"可对角化的",example:"A <em>diagonalizable</em> matrix has enough eigenvectors."},
+        {term:"symmetric matrix",pos:"n.",zh:"对称矩阵",example:"A <em>symmetric matrix</em> equals its transpose."},
+        {term:"singular value decomposition",pos:"n.",zh:"奇异值分解",example:"<em>Singular value decomposition</em> factors any matrix into three."},
+        {term:"characteristic polynomial",pos:"n.",zh:"特征多项式",example:"The roots of the <em>characteristic polynomial</em> are eigenvalues."}
+      ],
+      "统计与概率": [
+        {term:"probability",pos:"n.",zh:"概率",example:"<em>Probability</em> lies between 0 and 1."},
+        {term:"random variable",pos:"n.",zh:"随机变量",example:"A <em>random variable</em> maps outcomes to numbers."},
+        {term:"expectation",pos:"n.",zh:"期望",example:"The <em>expectation</em> is the long-run average."},
+        {term:"variance",pos:"n.",zh:"方差",example:"<em>Variance</em> measures spread around the mean."},
+        {term:"standard deviation",pos:"n.",zh:"标准差",example:"<em>Standard deviation</em> is the square root of variance."},
+        {term:"distribution",pos:"n.",zh:"分布",example:"A probability <em>distribution</em> describes outcomes."},
+        {term:"normal distribution",pos:"n.",zh:"正态分布",example:"The <em>normal distribution</em> is bell-shaped."},
+        {term:"binomial distribution",pos:"n.",zh:"二项分布",example:"The <em>binomial distribution</em> counts successes in n trials."},
+        {term:"Poisson distribution",pos:"n.",zh:"泊松分布",example:"The <em>Poisson distribution</em> models rare events."},
+        {term:"uniform distribution",pos:"n.",zh:"均匀分布",example:"In a <em>uniform distribution</em>, outcomes are equally likely."},
+        {term:"exponential distribution",pos:"n.",zh:"指数分布",example:"The <em>exponential distribution</em> models waiting times."},
+        {term:"cumulative distribution function",pos:"n.",zh:"累积分布函数",example:"The <em>cumulative distribution function</em> gives P(X ≤ x)."},
+        {term:"probability density function",pos:"n.",zh:"概率密度函数",example:"A <em>probability density function</em> describes continuous probabilities."},
+        {term:"conditional probability",pos:"n.",zh:"条件概率",example:"<em>Conditional probability</em> is P(A|B)."},
+        {term:"independence",pos:"n.",zh:"独立性",example:"<em>Independence</em> means P(A∩B) = P(A)P(B)."},
+        {term:"Bayes' theorem",pos:"n.",zh:"贝叶斯定理",example:"<em>Bayes' theorem</em> updates probabilities with evidence."},
+        {term:"sample space",pos:"n.",zh:"样本空间",example:"The <em>sample space</em> is all possible outcomes."},
+        {term:"event",pos:"n.",zh:"事件",example:"An <em>event</em> is a subset of the sample space."},
+        {term:"mutually exclusive",pos:"adj.",zh:"互斥的",example:"<em>Mutually exclusive</em> events cannot both occur."},
+        {term:"covariance",pos:"n.",zh:"协方差",example:"<em>Covariance</em> measures joint variation."},
+        {term:"correlation",pos:"n.",zh:"相关性",example:"<em>Correlation</em> measures linear dependence."},
+        {term:"regression",pos:"n.",zh:"回归",example:"Linear <em>regression</em> fits a line to data."},
+        {term:"hypothesis testing",pos:"n.",zh:"假设检验",example:"<em>Hypothesis testing</em> decides on a null hypothesis."},
+        {term:"confidence interval",pos:"n.",zh:"置信区间",example:"A <em>confidence interval</em> estimates a parameter range."},
+        {term:"p-value",pos:"n.",zh:"p 值",example:"A small <em>p-value</em> suggests evidence against the null."},
+        {term:"population",pos:"n.",zh:"总体",example:"The <em>population</em> is the entire group under study."},
+        {term:"sample",pos:"n.",zh:"样本",example:"A <em>sample</em> is a subset of the population."},
+        {term:"mean",pos:"n.",zh:"均值",example:"The <em>mean</em> is the sum divided by the count."},
+        {term:"median",pos:"n.",zh:"中位数",example:"The <em>median</em> is the middle value."},
+        {term:"mode",pos:"n.",zh:"众数",example:"The <em>mode</em> is the most frequent value."},
+        {term:"quartile",pos:"n.",zh:"四分位数",example:"<em>Quartiles</em> divide data into four parts."},
+        {term:"outlier",pos:"n.",zh:"异常值",example:"An <em>outlier</em> lies far from the rest."},
+        {term:"estimator",pos:"n.",zh:"估计量",example:"An <em>estimator</em> computes a parameter estimate."},
+        {term:"maximum likelihood",pos:"n.",zh:"最大似然",example:"<em>Maximum likelihood</em> chooses best-fitting parameters."},
+        {term:"central limit theorem",pos:"n.",zh:"中心极限定理",example:"The <em>central limit theorem</em> explains sample-mean normality."}
+      ],
+      "离散数学": [
+        {term:"set",pos:"n.",zh:"集合",example:"A <em>set</em> is a collection of distinct objects."},
+        {term:"subset",pos:"n.",zh:"子集",example:"A <em>subset</em> contains elements of the original set."},
+        {term:"union",pos:"n.",zh:"并集",example:"The <em>union</em> combines elements of both sets."},
+        {term:"intersection",pos:"n.",zh:"交集",example:"The <em>intersection</em> contains common elements."},
+        {term:"complement",pos:"n.",zh:"补集",example:"The <em>complement</em> contains elements not in the set."},
+        {term:"Cartesian product",pos:"n.",zh:"笛卡尔积",example:"The <em>Cartesian product</em> gives all ordered pairs."},
+        {term:"relation",pos:"n.",zh:"关系",example:"A <em>relation</em> is a set of ordered pairs."},
+        {term:"equivalence relation",pos:"n.",zh:"等价关系",example:"An <em>equivalence relation</em> is reflexive, symmetric, transitive."},
+        {term:"partial order",pos:"n.",zh:"偏序",example:"A <em>partial order</em> is reflexive, antisymmetric, transitive."},
+        {term:"injection",pos:"n.",zh:"单射",example:"An <em>injection</em> maps distinct inputs to distinct outputs."},
+        {term:"surjection",pos:"n.",zh:"满射",example:"A <em>surjection</em> covers the codomain."},
+        {term:"bijection",pos:"n.",zh:"双射",example:"A <em>bijection</em> is both injective and surjective."},
+        {term:"graph",pos:"n.",zh:"图",example:"A <em>graph</em> has vertices and edges."},
+        {term:"edge",pos:"n.",zh:"边",example:"An <em>edge</em> connects two vertices."},
+        {term:"path",pos:"n.",zh:"路径",example:"A <em>path</em> is a sequence of adjacent vertices."},
+        {term:"cycle",pos:"n.",zh:"环",example:"A <em>cycle</em> starts and ends at the same vertex."},
+        {term:"tree",pos:"n.",zh:"树",example:"A <em>tree</em> is connected with no cycles."},
+        {term:"spanning tree",pos:"n.",zh:"生成树",example:"A <em>spanning tree</em> connects all vertices without cycles."},
+        {term:"bipartite graph",pos:"n.",zh:"二分图",example:"A <em>bipartite graph</em> splits vertices into two independent sets."},
+        {term:"Eulerian path",pos:"n.",zh:"欧拉路径",example:"An <em>Eulerian path</em> visits every edge once."},
+        {term:"Hamiltonian cycle",pos:"n.",zh:"哈密顿回路",example:"A <em>Hamiltonian cycle</em> visits every vertex once."},
+        {term:"adjacency matrix",pos:"n.",zh:"邻接矩阵",example:"An <em>adjacency matrix</em> encodes connections."},
+        {term:"degree",pos:"n.",zh:"度",example:"The <em>degree</em> is the number of incident edges."},
+        {term:"connected",pos:"adj.",zh:"连通的",example:"A graph is <em>connected</em> if every pair of vertices is linked."},
+        {term:"planar graph",pos:"n.",zh:"平面图",example:"A <em>planar graph</em> can be drawn without crossings."},
+        {term:"coloring",pos:"n.",zh:"着色",example:"<em>Coloring</em> assigns colors so adjacent vertices differ."},
+        {term:"Boolean algebra",pos:"n.",zh:"布尔代数",example:"<em>Boolean algebra</em> deals with true and false."},
+        {term:"proposition",pos:"n.",zh:"命题",example:"A <em>proposition</em> is true or false."},
+        {term:"predicate",pos:"n.",zh:"谓词",example:"A <em>predicate</em> expresses a property."},
+        {term:"quantifier",pos:"n.",zh:"量词",example:"A <em>quantifier</em> specifies scope."},
+        {term:"truth table",pos:"n.",zh:"真值表",example:"A <em>truth table</em> lists outputs for every input."}
+      ],
+      "逻辑与证明": [
+        {term:"proposition",pos:"n.",zh:"命题",example:"A <em>proposition</em> is a statement that is either true or false."},
+        {term:"axiom",pos:"n.",zh:"公理",example:"An <em>axiom</em> is accepted without proof."},
+        {term:"theorem",pos:"n.",zh:"定理",example:"A <em>theorem</em> is a statement proven from axioms and prior results."},
+        {term:"lemma",pos:"n.",zh:"引理",example:"A <em>lemma</em> is a small theorem used to prove a larger result."},
+        {term:"corollary",pos:"n.",zh:"推论",example:"A <em>corollary</em> follows directly from a proven theorem."},
+        {term:"proof",pos:"n.",zh:"证明",example:"A <em>proof</em> is a logical argument establishing truth."},
+        {term:"direct proof",pos:"n.",zh:"直接证明",example:"A <em>direct proof</em> assumes the hypothesis and derives the conclusion."},
+        {term:"proof by contradiction",pos:"n.",zh:"反证法",example:"In <em>proof by contradiction</em>, we assume the negation and derive a contradiction."},
+        {term:"contrapositive",pos:"n.",zh:"逆否命题",example:"The <em>contrapositive</em> of P → Q is ¬Q → ¬P."},
+        {term:"converse",pos:"n.",zh:"逆命题",example:"The <em>converse</em> of P → Q is Q → P."},
+        {term:"inverse",pos:"n.",zh:"否命题",example:"The <em>inverse</em> of P → Q is ¬P → ¬Q."},
+        {term:"mathematical induction",pos:"n.",zh:"数学归纳法",example:"<em>Mathematical induction</em> proves statements for all natural numbers."},
+        {term:"counterexample",pos:"n.",zh:"反例",example:"A single <em>counterexample</em> disproves a universal claim."},
+        {term:"implication",pos:"n.",zh:"蕴含",example:"An <em>implication</em> has the form if P then Q."},
+        {term:"equivalence",pos:"n.",zh:"等价",example:"An <em>equivalence</em> is a statement of the form P if and only if Q."},
+        {term:"if and only if",pos:"phrase",zh:"当且仅当",example:"P <em>if and only if</em> Q means P and Q are logically equivalent."},
+        {term:"necessary condition",pos:"n.",zh:"必要条件",example:"Q is a <em>necessary condition</em> for P if P implies Q."},
+        {term:"sufficient condition",pos:"n.",zh:"充分条件",example:"P is a <em>sufficient condition</em> for Q if P implies Q."},
+        {term:"logical connective",pos:"n.",zh:"逻辑联结词",example:"AND, OR, and NOT are <em>logical connectives</em>."},
+        {term:"truth table",pos:"n.",zh:"真值表",example:"A <em>truth table</em> evaluates a formula on all inputs."},
+        {term:"tautology",pos:"n.",zh:"重言式",example:"A <em>tautology</em> is true under every assignment."},
+        {term:"contradiction",pos:"n.",zh:"矛盾式",example:"A <em>contradiction</em> is false under every assignment."},
+        {term:"inference rule",pos:"n.",zh:"推理规则",example:"An <em>inference rule</em> permits deriving new statements from premises."},
+        {term:"deduction",pos:"n.",zh:"演绎",example:"<em>Deduction</em> derives conclusions from given premises."},
+        {term:"syllogism",pos:"n.",zh:"三段论",example:"A <em>syllogism</em> combines two premises to reach a conclusion."},
+        {term:"fallacy",pos:"n.",zh:"谬误",example:"A <em>fallacy</em> is an error in reasoning."},
+        {term:"well-ordering principle",pos:"n.",zh:"良序原理",example:"The <em>well-ordering principle</em> states every nonempty set of positive integers has a least element."},
+        {term:"strong induction",pos:"n.",zh:"强归纳法",example:"<em>Strong induction</em> allows using all smaller cases in the inductive step."}
+      ]
+    }
+  },
+  "物理": {
+    icon: "⚛️",
+    domains: {
+      "力学": [
+        {term:"acceleration",pos:"n.",zh:"加速度",example:"<em>Acceleration</em> is the rate of change of velocity."},
+        {term:"angular momentum",pos:"n.",zh:"角动量",example:"<em>Angular momentum</em> is conserved without external torque."},
+        {term:"angular velocity",pos:"n.",zh:"角速度",example:"<em>Angular velocity</em> describes rotational speed."},
+        {term:"buoyancy",pos:"n.",zh:"浮力",example:"<em>Buoyancy</em> is the upward force from a fluid."},
+        {term:"center of mass",pos:"n.",zh:"质心",example:"The <em>center of mass</em> is the average mass position."},
+        {term:"collision",pos:"n.",zh:"碰撞",example:"In an elastic <em>collision</em>, kinetic energy is conserved."},
+        {term:"displacement",pos:"n.",zh:"位移",example:"<em>Displacement</em> is a vector from start to end."},
+        {term:"elastic collision",pos:"n.",zh:"弹性碰撞",example:"An <em>elastic collision</em> conserves momentum and kinetic energy."},
+        {term:"equilibrium",pos:"n.",zh:"平衡",example:"At <em>equilibrium</em>, net force is zero."},
+        {term:"force",pos:"n.",zh:"力",example:"<em>Force</em> causes acceleration."},
+        {term:"friction",pos:"n.",zh:"摩擦力",example:"<em>Friction</em> opposes relative motion."},
+        {term:"gravitational force",pos:"n.",zh:"重力",example:"<em>Gravitational force</em> is proportional to mass."},
+        {term:"inertia",pos:"n.",zh:"惯性",example:"<em>Inertia</em> resists changes in motion."},
+        {term:"kinetic energy",pos:"n.",zh:"动能",example:"<em>Kinetic energy</em> equals ½mv²."},
+        {term:"mass",pos:"n.",zh:"质量",example:"<em>Mass</em> measures the amount of matter."},
+        {term:"momentum",pos:"n.",zh:"动量",example:"<em>Momentum</em> equals mass times velocity."},
+        {term:"Newton's laws",pos:"n.",zh:"牛顿定律",example:"<em>Newton's laws</em> form the basis of classical mechanics."},
+        {term:"normal force",pos:"n.",zh:"支持力",example:"The <em>normal force</em> is perpendicular to a surface."},
+        {term:"potential energy",pos:"n.",zh:"势能",example:"<em>Potential energy</em> is energy due to position."},
+        {term:"projectile",pos:"n.",zh:"抛体",example:"A <em>projectile</em> moves under gravity alone."},
+        {term:"rotation",pos:"n.",zh:"转动",example:"<em>Rotation</em> is motion around an axis."},
+        {term:"static equilibrium",pos:"n.",zh:"静力学平衡",example:"A body in <em>static equilibrium</em> stays at rest."},
+        {term:"tension",pos:"n.",zh:"张力",example:"<em>Tension</em> is the pulling force in a rope."},
+        {term:"torque",pos:"n.",zh:"力矩",example:"<em>Torque</em> is the rotational effect of a force."},
+        {term:"trajectory",pos:"n.",zh:"轨迹",example:"The <em>trajectory</em> of a projectile is parabolic."},
+        {term:"velocity",pos:"n.",zh:"速度",example:"<em>Velocity</em> is speed in a direction."},
+        {term:"weight",pos:"n.",zh:"重量",example:"<em>Weight</em> equals mg."},
+        {term:"work",pos:"n.",zh:"功",example:"<em>Work</em> equals force times displacement."},
+        {term:"impulse",pos:"n.",zh:"冲量",example:"<em>Impulse</em> equals change in momentum."},
+        {term:"moment of inertia",pos:"n.",zh:"转动惯量",example:"<em>Moment of inertia</em> resists angular acceleration."},
+        {term:"centripetal force",pos:"n.",zh:"向心力",example:"<em>Centripetal force</em> maintains circular motion."}
+      ],
+      "热力学": [
+        {term:"absolute zero",pos:"n.",zh:"绝对零度",example:"At <em>absolute zero</em>, particle motion is minimal."},
+        {term:"adiabatic",pos:"adj.",zh:"绝热的",example:"In an <em>adiabatic</em> process, no heat is exchanged."},
+        {term:"boiling point",pos:"n.",zh:"沸点",example:"The <em>boiling point</em> decreases with altitude."},
+        {term:"Carnot cycle",pos:"n.",zh:"卡诺循环",example:"The <em>Carnot cycle</em> gives maximum efficiency."},
+        {term:"Celsius",pos:"n.",zh:"摄氏度",example:"Water freezes at 0 <em>Celsius</em>."},
+        {term:"conduction",pos:"n.",zh:"传导",example:"<em>Conduction</em> transfers heat by contact."},
+        {term:"convection",pos:"n.",zh:"对流",example:"<em>Convection</em> transfers heat via fluid motion."},
+        {term:"entropy",pos:"n.",zh:"熵",example:"<em>Entropy</em> measures disorder."},
+        {term:"enthalpy",pos:"n.",zh:"焓",example:"<em>Enthalpy</em> is internal energy plus PV work."},
+        {term:"first law of thermodynamics",pos:"n.",zh:"热力学第一定律",example:"The <em>first law</em> states conservation of energy."},
+        {term:"heat",pos:"n.",zh:"热",example:"<em>Heat</em> is energy transfer from temperature difference."},
+        {term:"heat capacity",pos:"n.",zh:"热容",example:"<em>Heat capacity</em> raises temperature by one degree."},
+        {term:"internal energy",pos:"n.",zh:"内能",example:"<em>Internal energy</em> is total particle energy."},
+        {term:"isobaric",pos:"adj.",zh:"等压的",example:"An <em>isobaric</em> process has constant pressure."},
+        {term:"isochoric",pos:"adj.",zh:"等容的",example:"An <em>isochoric</em> process has constant volume."},
+        {term:"isothermal",pos:"adj.",zh:"等温的",example:"An <em>isothermal</em> process has constant temperature."},
+        {term:"Kelvin",pos:"n.",zh:"开尔文",example:"The <em>Kelvin</em> is the SI unit of temperature."},
+        {term:"latent heat",pos:"n.",zh:"潜热",example:"<em>Latent heat</em> is absorbed during phase change."},
+        {term:"melting point",pos:"n.",zh:"熔点",example:"The <em>melting point</em> of ice is 273 K."},
+        {term:"phase transition",pos:"n.",zh:"相变",example:"A <em>phase transition</em> changes the state of matter."},
+        {term:"radiation",pos:"n.",zh:"辐射",example:"Thermal <em>radiation</em> needs no medium."},
+        {term:"second law of thermodynamics",pos:"n.",zh:"热力学第二定律",example:"The <em>second law</em> states entropy tends to increase."},
+        {term:"specific heat",pos:"n.",zh:"比热",example:"<em>Specific heat</em> is heat capacity per unit mass."},
+        {term:"thermal equilibrium",pos:"n.",zh:"热平衡",example:"Objects in <em>thermal equilibrium</em> have equal temperature."},
+        {term:"thermal expansion",pos:"n.",zh:"热膨胀",example:"<em>Thermal expansion</em> increases length with temperature."},
+        {term:"temperature",pos:"n.",zh:"温度",example:"<em>Temperature</em> reflects average kinetic energy."},
+        {term:"thermodynamic process",pos:"n.",zh:"热力学过程",example:"A <em>thermodynamic process</em> changes a system's state."},
+        {term:"triple point",pos:"n.",zh:"三相点",example:"At the <em>triple point</em>, three phases coexist."}
+      ],
+      "电磁学": [
+        {term:"ampere",pos:"n.",zh:"安培",example:"The <em>ampere</em> is the SI unit of current."},
+        {term:"capacitance",pos:"n.",zh:"电容",example:"<em>Capacitance</em> is charge per unit voltage."},
+        {term:"capacitor",pos:"n.",zh:"电容器",example:"A <em>capacitor</em> stores energy in an electric field."},
+        {term:"charge",pos:"n.",zh:"电荷",example:"Electric <em>charge</em> is a fundamental property of matter."},
+        {term:"circuit",pos:"n.",zh:"电路",example:"A closed <em>circuit</em> allows current flow."},
+        {term:"conductor",pos:"n.",zh:"导体",example:"A <em>conductor</em> allows easy charge flow."},
+        {term:"Coulomb's law",pos:"n.",zh:"库仑定律",example:"<em>Coulomb's law</em> gives the force between charges."},
+        {term:"current",pos:"n.",zh:"电流",example:"<em>Current</em> is charge flow per unit time."},
+        {term:"dielectric",pos:"n.",zh:"电介质",example:"A <em>dielectric</em> polarizes in an electric field."},
+        {term:"electric field",pos:"n.",zh:"电场",example:"An <em>electric field</em> exerts force on charges."},
+        {term:"electric potential",pos:"n.",zh:"电势",example:"<em>Electric potential</em> is energy per unit charge."},
+        {term:"electromagnetic wave",pos:"n.",zh:"电磁波",example:"An <em>electromagnetic wave</em> has oscillating fields."},
+        {term:"electromotive force",pos:"n.",zh:"电动势",example:"<em>Electromotive force</em> drives current."},
+        {term:"electron",pos:"n.",zh:"电子",example:"An <em>electron</em> carries negative charge."},
+        {term:"Faraday's law",pos:"n.",zh:"法拉第定律",example:"<em>Faraday's law</em> links changing flux to EMF."},
+        {term:"flux",pos:"n.",zh:"通量",example:"Electric <em>flux</em> measures field through a surface."},
+        {term:"Gauss's law",pos:"n.",zh:"高斯定律",example:"<em>Gauss's law</em> relates flux to enclosed charge."},
+        {term:"inductance",pos:"n.",zh:"电感",example:"<em>Inductance</em> opposes current changes."},
+        {term:"inductor",pos:"n.",zh:"电感器",example:"An <em>inductor</em> stores energy in a magnetic field."},
+        {term:"insulator",pos:"n.",zh:"绝缘体",example:"An <em>insulator</em> resists charge flow."},
+        {term:"Lenz's law",pos:"n.",zh:"楞次定律",example:"<em>Lenz's law</em> gives induced current direction."},
+        {term:"magnetic field",pos:"n.",zh:"磁场",example:"A moving charge feels a <em>magnetic field</em>."},
+        {term:"magnetic flux",pos:"n.",zh:"磁通量",example:"<em>Magnetic flux</em> is field times area."},
+        {term:"Ohm's law",pos:"n.",zh:"欧姆定律",example:"<em>Ohm's law</em> states V = IR."},
+        {term:"parallel circuit",pos:"n.",zh:"并联电路",example:"In a <em>parallel circuit</em>, voltage is equal across branches."},
+        {term:"permittivity",pos:"n.",zh:"介电常数",example:"<em>Permittivity</em> describes response to electric fields."},
+        {term:"permeability",pos:"n.",zh:"磁导率",example:"<em>Permeability</em> describes response to magnetic fields."},
+        {term:"resistance",pos:"n.",zh:"电阻",example:"<em>Resistance</em> opposes current."},
+        {term:"resistor",pos:"n.",zh:"电阻器",example:"A <em>resistor</em> dissipates energy as heat."},
+        {term:"series circuit",pos:"n.",zh:"串联电路",example:"In a <em>series circuit</em>, current is equal everywhere."},
+        {term:"solenoid",pos:"n.",zh:"螺线管",example:"A <em>solenoid</em> generates a uniform magnetic field."},
+        {term:"voltage",pos:"n.",zh:"电压",example:"<em>Voltage</em> is electric potential difference."},
+        {term:"alternating current",pos:"n.",zh:"交流电",example:"<em>Alternating current</em> reverses direction."},
+        {term:"direct current",pos:"n.",zh:"直流电",example:"<em>Direct current</em> flows one way."}
+      ],
+      "光学": [
+        {term:"absorption",pos:"n.",zh:"吸收",example:"<em>Absorption</em> removes energy from light."},
+        {term:"angle of incidence",pos:"n.",zh:"入射角",example:"The <em>angle of incidence</em> is measured from the normal."},
+        {term:"angle of reflection",pos:"n.",zh:"反射角",example:"The <em>angle of reflection</em> equals incidence."},
+        {term:"angle of refraction",pos:"n.",zh:"折射角",example:"The <em>angle of refraction</em> follows Snell's law."},
+        {term:"coherence",pos:"n.",zh:"相干性",example:"<em>Coherence</em> is needed for stable interference."},
+        {term:"concave lens",pos:"n.",zh:"凹透镜",example:"A <em>concave lens</em> diverges rays."},
+        {term:"convex lens",pos:"n.",zh:"凸透镜",example:"A <em>convex lens</em> converges rays."},
+        {term:"diffraction",pos:"n.",zh:"衍射",example:"<em>Diffraction</em> bends waves around obstacles."},
+        {term:"dispersion",pos:"n.",zh:"色散",example:"<em>Dispersion</em> separates white light into colors."},
+        {term:"focal length",pos:"n.",zh:"焦距",example:"The <em>focal length</em> determines image distance."},
+        {term:"focal point",pos:"n.",zh:"焦点",example:"Parallel rays converge at the <em>focal point</em>."},
+        {term:"geometric optics",pos:"n.",zh:"几何光学",example:"<em>Geometric optics</em> uses ray models."},
+        {term:"image",pos:"n.",zh:"像",example:"A lens forms an <em>image</em> of the object."},
+        {term:"interference",pos:"n.",zh:"干涉",example:"<em>Interference</em> results from wave superposition."},
+        {term:"lens",pos:"n.",zh:"透镜",example:"A <em>lens</em> refracts light to form images."},
+        {term:"magnification",pos:"n.",zh:"放大率",example:"<em>Magnification</em> is image height over object height."},
+        {term:"mirror",pos:"n.",zh:"镜子",example:"A <em>mirror</em> reflects light."},
+        {term:"object",pos:"n.",zh:"物",example:"The <em>object</em> is what the lens images."},
+        {term:"optical axis",pos:"n.",zh:"光轴",example:"The <em>optical axis</em> passes through the lens center."},
+        {term:"polarization",pos:"n.",zh:"偏振",example:"<em>Polarization</em> restricts field direction."},
+        {term:"reflection",pos:"n.",zh:"反射",example:"<em>Reflection</em> bounces light off a surface."},
+        {term:"refraction",pos:"n.",zh:"折射",example:"<em>Refraction</em> bends light in a new medium."},
+        {term:"refractive index",pos:"n.",zh:"折射率",example:"The <em>refractive index</em> is c/v."},
+        {term:"total internal reflection",pos:"n.",zh:"全内反射",example:"<em>Total internal reflection</em> traps light in fibers."},
+        {term:"virtual image",pos:"n.",zh:"虚像",example:"A <em>virtual image</em> cannot be projected."},
+        {term:"real image",pos:"n.",zh:"实像",example:"A <em>real image</em> can be projected on a screen."},
+        {term:"wavelength",pos:"n.",zh:"波长",example:"<em>Wavelength</em> is distance between crests."}
+      ],
+      "振动与波": [
+        {term:"amplitude",pos:"n.",zh:"振幅",example:"<em>Amplitude</em> is maximum displacement."},
+        {term:"angular frequency",pos:"n.",zh:"角频率",example:"<em>Angular frequency</em> is 2π times frequency."},
+        {term:"antinode",pos:"n.",zh:"波腹",example:"An <em>antinode</em> has maximum displacement."},
+        {term:"damping",pos:"n.",zh:"阻尼",example:"<em>Damping</em> reduces amplitude over time."},
+        {term:"frequency",pos:"n.",zh:"频率",example:"<em>Frequency</em> is oscillations per second."},
+        {term:"harmonic",pos:"n.",zh:"谐波",example:"A <em>harmonic</em> is a multiple of the base frequency."},
+        {term:"longitudinal wave",pos:"n.",zh:"纵波",example:"A <em>longitudinal wave</em> oscillates along propagation."},
+        {term:"node",pos:"n.",zh:"波节",example:"A <em>node</em> has zero displacement."},
+        {term:"oscillation",pos:"n.",zh:"振荡",example:"An <em>oscillation</em> is back-and-forth motion."},
+        {term:"period",pos:"n.",zh:"周期",example:"The <em>period</em> is one full cycle."},
+        {term:"phase",pos:"n.",zh:"相位",example:"<em>Phase</em> indicates position in the cycle."},
+        {term:"resonance",pos:"n.",zh:"共振",example:"<em>Resonance</em> occurs at natural frequency."},
+        {term:"simple harmonic motion",pos:"n.",zh:"简谐运动",example:"<em>Simple harmonic motion</em> is sinusoidal."},
+        {term:"standing wave",pos:"n.",zh:"驻波",example:"A <em>standing wave</em> has fixed nodes."},
+        {term:"superposition",pos:"n.",zh:"叠加",example:"<em>Superposition</em> adds displacements."},
+        {term:"transverse wave",pos:"n.",zh:"横波",example:"A <em>transverse wave</em> oscillates perpendicular to propagation."},
+        {term:"wave",pos:"n.",zh:"波",example:"A <em>wave</em> transfers energy."},
+        {term:"wave equation",pos:"n.",zh:"波动方程",example:"The <em>wave equation</em> describes propagation."},
+        {term:"wave number",pos:"n.",zh:"波数",example:"<em>Wave number</em> is 2π over wavelength."},
+        {term:"wave speed",pos:"n.",zh:"波速",example:"<em>Wave speed</em> equals frequency times wavelength."},
+        {term:"beat",pos:"n.",zh:"拍",example:"A <em>beat</em> arises from two close frequencies."},
+        {term:"Doppler effect",pos:"n.",zh:"多普勒效应",example:"The <em>Doppler effect</em> shifts frequency when source moves."}
+      ],
+      "近代物理": [
+        {term:"annihilation",pos:"n.",zh:"湮灭",example:"<em>Annihilation</em> converts particle-antiparticle mass to energy."},
+        {term:"antiparticle",pos:"n.",zh:"反粒子",example:"Each particle has an <em>antiparticle</em>."},
+        {term:"atomic number",pos:"n.",zh:"原子序数",example:"The <em>atomic number</em> equals the proton count."},
+        {term:"Bohr radius",pos:"n.",zh:"玻尔半径",example:"The <em>Bohr radius</em> sets atomic scale."},
+        {term:"conservation law",pos:"n.",zh:"守恒定律",example:"A <em>conservation law</em> states a quantity is unchanged."},
+        {term:"de Broglie wavelength",pos:"n.",zh:"德布罗意波长",example:"The <em>de Broglie wavelength</em> links momentum to waves."},
+        {term:"decay",pos:"n.",zh:"衰变",example:"Radioactive <em>decay</em> emits particles."},
+        {term:"electron volt",pos:"n.",zh:"电子伏特",example:"The <em>electron volt</em> is a unit of energy."},
+        {term:"energy level",pos:"n.",zh:"能级",example:"Electrons occupy discrete <em>energy levels</em>."},
+        {term:"exclusion principle",pos:"n.",zh:"不相容原理",example:"The <em>exclusion principle</em> forbids identical fermions in one state."},
+        {term:"fission",pos:"n.",zh:"裂变",example:"<em>Fission</em> splits a heavy nucleus."},
+        {term:"fusion",pos:"n.",zh:"聚变",example:"<em>Fusion</em> combines light nuclei."},
+        {term:"ground state",pos:"n.",zh:"基态",example:"The <em>ground state</em> has lowest energy."},
+        {term:"half-life",pos:"n.",zh:"半衰期",example:"The <em>half-life</em> is time for half to decay."},
+        {term:"Heisenberg uncertainty principle",pos:"n.",zh:"海森堡不确定性原理",example:"The <em>uncertainty principle</em> limits simultaneous precision."},
+        {term:"isotope",pos:"n.",zh:"同位素",example:"An <em>isotope</em> has different neutron count."},
+        {term:"nuclear physics",pos:"n.",zh:"核物理",example:"<em>Nuclear physics</em> studies nuclei."},
+        {term:"nucleus",pos:"n.",zh:"原子核",example:"The <em>nucleus</em> contains protons and neutrons."},
+        {term:"particle",pos:"n.",zh:"粒子",example:"A <em>particle</em> is a constituent of matter."},
+        {term:"photoelectric effect",pos:"n.",zh:"光电效应",example:"The <em>photoelectric effect</em> shows light's particle nature."},
+        {term:"photon",pos:"n.",zh:"光子",example:"A <em>photon</em> is a light quantum."},
+        {term:"Planck's constant",pos:"n.",zh:"普朗克常数",example:"<em>Planck's constant</em> relates energy to frequency."},
+        {term:"quantization",pos:"n.",zh:"量子化",example:"<em>Quantization</em> restricts values to discrete levels."},
+        {term:"quantum mechanics",pos:"n.",zh:"量子力学",example:"<em>Quantum mechanics</em> describes atomic-scale matter."},
+        {term:"radioactive",pos:"adj.",zh:"放射性的",example:"A <em>radioactive</em> material emits radiation."},
+        {term:"relativity",pos:"n.",zh:"相对论",example:"<em>Relativity</em> links space and time."},
+        {term:"rest mass",pos:"n.",zh:"静质量",example:"<em>Rest mass</em> is mass in the rest frame."},
+        {term:"spin",pos:"n.",zh:"自旋",example:"<em>Spin</em> is intrinsic angular momentum."},
+        {term:"wave function",pos:"n.",zh:"波函数",example:"The <em>wave function</em> encodes quantum state."},
+        {term:"excited state",pos:"n.",zh:"激发态",example:"An <em>excited state</em> has higher energy."},
+        {term:"work function",pos:"n.",zh:"逸出功",example:"The <em>work function</em> is the minimum energy to remove an electron."}
+      ]
+    }
+  }
+};
+
+/* =========================================================
+   工具
+   ========================================================= */
+const STATUS = { NEW: 'new', LEARNING: 'learning', MASTERED: 'mastered' };
+const STORE_KEY = 'mathphys_lex_v6';
+const LIST_MODES = ['en-zh','zh-en','en','zh'];
+const LIST_MODE_LABELS = { 'en-zh':'英中','zh-en':'中英','en':'仅英','zh':'仅中' };
+
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escAttr(s){ return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function shuffle(arr){ const a = arr.slice(); for(let i = a.length-1; i>0; i--){ const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+function loadProgress(){ try{ const r = localStorage.getItem(STORE_KEY); return r ? JSON.parse(r) : {}; }catch(e){ return {}; } }
+function saveProgress(p){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(p)); }catch(e){} }
+
+let progress = loadProgress();
+function termKey(mod, dom, term){ return mod+'||'+dom+'||'+term; }
+function getStatus(mod, dom, term){ return progress[termKey(mod, dom, term)] || STATUS.NEW; }
+function setStatus(mod, dom, term, status){
+  const k = termKey(mod, dom, term);
+  if(status === STATUS.NEW) delete progress[k]; else progress[k] = status;
+  saveProgress(progress);
+}
+function cycleStatus(mod, dom, term){
+  const cur = getStatus(mod, dom, term);
+  const next = cur === STATUS.NEW ? STATUS.LEARNING : cur === STATUS.LEARNING ? STATUS.MASTERED : STATUS.NEW;
+  setStatus(mod, dom, term, next);
+}
+
+function getAllItems(mod, dom){
+  if(dom === '__ALL__'){
+    const arr = [];
+    Object.keys(DATA[mod].domains).forEach(d => {
+      DATA[mod].domains[d].forEach(it => arr.push({ mod, dom: d, item: it }));
+    });
+    return arr;
+  }
+  return DATA[mod].domains[dom].map(it => ({ mod, dom, item: it }));
+}
+
+function zhCandidates(zh){
+  return String(zh||'').split(/[；;、\/]/).map(s=>s.trim()).filter(Boolean);
+}
+function norm(s){
+  return String(s == null ? '' : s)
+    .replace(/[\uFF01-\uFF5E]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0xFEE0))
+    .replace(/[''']/g, '')
+    .toLowerCase()
+    .replace(/[\s,.;:!?，。；：！？、\-]/g, '');
+}
+function isSpellCorrect(it, dir, input){
+  const n = norm(input);
+  if(!n) return false;
+  if(dir === 'en-zh') return n === norm(it.term);
+  return zhCandidates(it.zh).some(z => norm(z) === n);
+}
+
+/* =========================================================
+   状态
+   ========================================================= */
+let state = {
+  subject: '数学',
+  module: null,
+  domain: null,
+  tab: 'flashcard',
+  flashDir: 'en-zh',
+  quizMode: 'choice',
+  quizDir: 'en-zh',
+  listMode: 'en-zh',
+  queue: [],
+  qi: 0,
+  flipped: false,
+  quizAnswered: false
+};
+
+/* =========================================================
+   视图
+   ========================================================= */
+const app = document.getElementById('app');
+
+function renderHome(){
+  state.module = null; state.domain = null;
+
+  const subjStats = {};
+  Object.keys(DATA).forEach(mod => {
+    let total = 0, mastered = 0;
+    Object.keys(DATA[mod].domains).forEach(dom => {
+      DATA[mod].domains[dom].forEach(it => {
+        total++;
+        if(getStatus(mod, dom, it.term) === STATUS.MASTERED) mastered++;
+      });
+    });
+    subjStats[mod] = { total, mastered };
+  });
+  const cur = state.subject;
+  const curData = DATA[cur];
+
+  app.innerHTML = `
+    <div class="hero">
+      <h1>数理词汇 MathLex</h1>
+      <p>数学 & 物理 · 闪卡 / 测验 / 词表 · 中英双向 · 全科覆盖</p>
+    </div>
+
+    <div class="subject-tabs">
+      ${Object.keys(DATA).map(mod => `
+        <button class="subject-tab ${mod === cur ? 'active' : ''}" data-subject="${mod}">
+          ${DATA[mod].icon} ${mod}（${subjStats[mod].total}）
+        </button>
+      `).join('')}
+    </div>
+
+    <div class="card">
+      <div class="overview">
+        <div>
+          <div class="num">${subjStats[cur].mastered}<small> / ${subjStats[cur].total}</small></div>
+          <div class="label">${cur} · 已掌握</div>
+        </div>
+        <div>
+          <div class="num">${Object.keys(curData.domains).length}</div>
+          <div class="label">学习领域</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="all-card" data-all="${cur}">
+      <span class="icon">🎯</span>
+      <div class="body">
+        <div class="t">全部 ${cur} 词汇</div>
+        <div class="s">${subjStats[cur].total} 词 · 已掌握 ${subjStats[cur].mastered} · 支持闪卡 / 测验 / 词表</div>
+      </div>
+      <span class="arrow">→</span>
+    </div>
+
+    <div class="card">
+      <div class="card-title">${curData.icon} ${cur} · 选择领域</div>
+      <div class="domain-grid">
+        ${Object.keys(curData.domains).map(dom => {
+          const items = curData.domains[dom];
+          let m = 0;
+          items.forEach(it => { if(getStatus(cur, dom, it.term) === STATUS.MASTERED) m++; });
+          return `
+            <div class="domain-card" data-domain="${escAttr(dom)}">
+              <div class="name">${esc(dom)}</div>
+              <div class="meta">${items.length} 词 · 已掌握 ${m}</div>
+              <div class="progress-bar"><span style="width:${items.length?m/items.length*100:0}%"></span></div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+
+    <div class="card" style="text-align:center;">
+      <button class="btn btn-ghost btn-block" id="resetAll" style="color:var(--red);border-color:#fecaca;">
+        重置全部学习进度
+      </button>
+    </div>
+  `;
+
+  app.querySelectorAll('.subject-tab').forEach(b => {
+    b.onclick = () => { state.subject = b.dataset.subject; renderHome(); };
+  });
+  app.querySelectorAll('.domain-card').forEach(el => {
+    el.onclick = () => openDomain(cur, el.dataset.domain);
+  });
+  app.querySelector('[data-all]').onclick = () => openDomain(cur, '__ALL__');
+  document.getElementById('resetAll').onclick = () => {
+    if(confirm('确定重置全部学习进度吗？')){ progress = {}; saveProgress(progress); renderHome(); }
+  };
+}
+
+function openDomain(mod, dom){
+  state.module = mod;
+  state.domain = dom;
+  state.tab = 'flashcard';
+  state.flipped = false;
+  state.quizAnswered = false;
+  buildQueue();
+  state.qi = 0;
+  renderLearn();
+}
+
+function renderLearn(){
+  const mod = state.module, dom = state.domain;
+  const items = getAllItems(mod, dom);
+  const mastered = items.filter(x => getStatus(x.mod, x.dom, x.item.term) === STATUS.MASTERED).length;
+  const title = dom === '__ALL__' ? `全部${mod}词汇` : dom;
+
+  app.innerHTML = `
+    <div class="topbar">
+      <button class="btn btn-ghost btn-sm" id="back">← 返回</button>
+      <div class="right">
+        <span class="tag">${items.length} 词</span>
+        <span class="tag" style="background:#ecfdf5;color:#047857;">已掌握 ${mastered}</span>
+      </div>
+    </div>
+    <div class="hero" style="margin-bottom:14px;">
+      <h1 style="font-size:20px;">${esc(title)}</h1>
+      <p>${esc(mod)}${dom === '__ALL__' ? ' · 跨领域混合练习' : ' · ' + esc(dom)}</p>
+    </div>
+
+    <div class="learn-tabs">
+      <button class="learn-tab ${state.tab==='flashcard'?'active':''}" data-tab="flashcard">🃏 闪卡</button>
+      <button class="learn-tab ${state.tab==='quiz'?'active':''}" data-tab="quiz">📝 测验</button>
+      <button class="learn-tab ${state.tab==='list'?'active':''}" data-tab="list">📋 词表</button>
+    </div>
+
+    <div class="control-bar" id="controlBar"></div>
+    <div id="tabContent"></div>
+  `;
+
+  document.getElementById('back').onclick = renderHome;
+  app.querySelectorAll('.learn-tab').forEach(b => {
+    b.onclick = () => {
+      state.tab = b.dataset.tab;
+      if(state.tab === 'flashcard' || state.tab === 'quiz'){
+        buildQueue();
+        state.qi = 0; state.flipped = false; state.quizAnswered = false;
+      }
+      renderLearn();
+    };
+  });
+
+  if(state.tab === 'flashcard'){ renderFlashControls(); renderFlashTab(); }
+  else if(state.tab === 'quiz'){ renderQuizControls(); renderQuizTab(); }
+  else { renderListControls(); renderListTab(); }
+}
+
+function renderFlashControls(){
+  const bar = document.getElementById('controlBar');
+  bar.innerHTML = `
+    <span>学习方向：</span>
+    <div class="dir-switch">
+      <button class="dir-btn ${state.flashDir==='en-zh'?'active':''}" data-dir="en-zh">英 → 中</button>
+      <button class="dir-btn ${state.flashDir==='zh-en'?'active':''}" data-dir="zh-en">中 → 英</button>
+    </div>
+  `;
+  bar.querySelectorAll('.dir-btn').forEach(b => {
+    b.onclick = () => {
+      state.flashDir = b.dataset.dir;
+      state.flipped = false;
+      renderFlashControls(); renderFlashTab();
+    };
+  });
+}
+function renderQuizControls(){
+  const bar = document.getElementById('controlBar');
+  bar.innerHTML = `
+    <span>题型：</span>
+    <div class="dir-switch">
+      <button class="dir-btn ${state.quizMode==='choice'?'active':''}" data-mode="choice">选择题</button>
+      <button class="dir-btn ${state.quizMode==='spell'?'active':''}" data-mode="spell">拼写题</button>
+    </div>
+    <span style="margin-left:10px;">方向：</span>
+    <div class="dir-switch">
+      <button class="dir-btn ${state.quizDir==='en-zh'?'active':''}" data-dir="en-zh">英 → 中</button>
+      <button class="dir-btn ${state.quizDir==='zh-en'?'active':''}" data-dir="zh-en">中 → 英</button>
+    </div>
+  `;
+  bar.querySelectorAll('[data-mode]').forEach(b => {
+    b.onclick = () => {
+      state.quizMode = b.dataset.mode;
+      state.quizAnswered = false;
+      renderQuizControls(); renderQuizTab();
+    };
+  });
+  bar.querySelectorAll('[data-dir]').forEach(b => {
+    b.onclick = () => {
+      state.quizDir = b.dataset.dir;
+      state.quizAnswered = false;
+      renderQuizControls(); renderQuizTab();
+    };
+  });
+}
+function renderListControls(){
+  const bar = document.getElementById('controlBar');
+  bar.innerHTML = `
+    <span>显示：</span>
+    <button class="btn btn-ghost btn-sm" id="modeBtn">${LIST_MODE_LABELS[state.listMode]} ⇄</button>
+    <span style="margin-left:auto;">点行可切换掌握状态</span>
+  `;
+  bar.querySelector('#modeBtn').onclick = () => {
+    const idx = LIST_MODES.indexOf(state.listMode);
+    state.listMode = LIST_MODES[(idx + 1) % LIST_MODES.length];
+    renderListControls(); renderListTab();
+  };
+}
+
+/* =========================================================
+   闪卡：点击只切换 class，不重建 DOM，保证 transition 动画生效
+   ========================================================= */
+function renderFlashTab(){
+  const wrap = document.getElementById('tabContent');
+  if(state.qi >= state.queue.length){ wrap.innerHTML = finishBlock('🎉 本套闪卡已全部浏览完毕'); bindFinish(wrap); return; }
+  const cur = state.queue[state.qi], it = cur.item, dir = state.flashDir;
+
+  const frontMain = dir === 'en-zh' ? it.term : it.zh;
+  const frontPos = it.pos ? `<div class="pos">${esc(it.pos)}</div>` : '';
+
+  wrap.innerHTML = `
+    <div style="text-align:right;font-size:12.5px;color:var(--muted);margin-bottom:6px;">${state.qi + 1} / ${state.queue.length}</div>
+    <div class="flashcard-wrap">
+      <div class="flashcard ${state.flipped?'flipped':''}" id="flashcard">
+        <div class="face front">
+          <div class="big-word">${esc(frontMain)}</div>
+          ${frontPos}
+          <div class="tap-hint">轻触卡片翻转</div>
+        </div>
+        <div class="face back">
+          <div class="back-term">${esc(it.term)}</div>
+          ${it.pos ? `<div class="back-pos">${esc(it.pos)}</div>` : ''}
+          <div class="back-zh">${esc(it.zh)}</div>
+          <div class="example">${it.example}</div>
+        </div>
+      </div>
+    </div>
+    <div class="flashcard-actions" id="flashActions" style="display:${state.flipped?'flex':'none'};">
+      <button class="btn btn-ghost" id="markLearning" style="flex:1;">还不熟</button>
+      <button class="btn btn-primary" id="markMastered" style="flex:1;">已掌握</button>
+    </div>
+    <div id="skipWrap" style="display:${state.flipped?'none':'block'};text-align:center;margin-top:6px;">
+      <button class="btn btn-ghost btn-sm" id="skip">跳过</button>
+    </div>
+  `;
+
+  const card = wrap.querySelector('#flashcard');
+  const actions = wrap.querySelector('#flashActions');
+  const skipWrap = wrap.querySelector('#skipWrap');
+
+  // 关键：只 toggle class，不重建 DOM，transition 动画才会生效
+  card.onclick = () => {
+    state.flipped = !state.flipped;
+    card.classList.toggle('flipped', state.flipped);
+    actions.style.display = state.flipped ? 'flex' : 'none';
+    skipWrap.style.display = state.flipped ? 'none' : 'block';
+  };
+
+  wrap.querySelector('#skip').onclick = () => {
+    state.qi++; state.flipped = false; renderFlashTab();
+  };
+  wrap.querySelector('#markLearning').onclick = () => {
+    setStatus(cur.mod, cur.dom, it.term, STATUS.LEARNING);
+    state.qi++; state.flipped = false; renderFlashTab();
+  };
+  wrap.querySelector('#markMastered').onclick = () => {
+    setStatus(cur.mod, cur.dom, it.term, STATUS.MASTERED);
+    state.qi++; state.flipped = false; renderFlashTab();
+  };
+}
+
+/* =========================================================
+   测验
+   ========================================================= */
+function renderQuizTab(){
+  const wrap = document.getElementById('tabContent');
+  if(state.qi >= state.queue.length){ wrap.innerHTML = finishBlock('🎉 本套测验已完成'); bindFinish(wrap); return; }
+  const cur = state.queue[state.qi], it = cur.item;
+  const dir = state.quizDir;
+
+  if(state.quizMode === 'choice'){
+    renderChoiceQuestion(wrap, cur, it, dir);
+  } else {
+    renderSpellQuestion(wrap, cur, it, dir);
+  }
+}
+
+function pickDistractors(cur, dir, count){
+  const pool = [];
+  const src1 = DATA[cur.mod].domains[cur.dom];
+  src1.forEach(x => { if(x.term !== cur.item.term) pool.push(x); });
+  if(pool.length < count){
+    Object.keys(DATA[cur.mod].domains).forEach(d => {
+      if(d === cur.dom) return;
+      DATA[cur.mod].domains[d].forEach(x => {
+        if(x.term !== cur.item.term && !pool.some(p => p.term === x.term)) pool.push(x);
+      });
+    });
+  }
+  const shuffled = shuffle(pool);
+  const picked = [];
+  for(const x of shuffled){
+    const label = dir === 'en-zh' ? x.zh : x.term;
+    if(!picked.some(p => p.label === label)) picked.push({ label, term: x.term, zh: x.zh });
+    if(picked.length >= count) break;
+  }
+  return picked;
+}
+
+function renderChoiceQuestion(wrap, cur, it, dir){
+  const prompt = dir === 'en-zh' ? it.term : it.zh;
+  const correct = dir === 'en-zh' ? it.zh : it.term;
+  const distractors = pickDistractors(cur, dir, 3);
+  const options = shuffle([{ label: correct, correct: true }, ...distractors.map(d => ({ label: d.label, correct: false }))]);
+
+  wrap.innerHTML = `
+    <div style="text-align:right;font-size:12.5px;color:var(--muted);margin-bottom:6px;">${state.qi + 1} / ${state.queue.length}</div>
+    <div class="quiz-card">
+      <div class="quiz-prompt">${esc(prompt)}</div>
+      <div class="quiz-hint">${it.pos ? esc(it.pos) + ' · ' : ''}${dir==='en-zh'?'选择正确的中文释义':'选择正确的英文术语'}</div>
+      ${options.map((o, i) => `<button class="quiz-option" data-i="${i}" data-correct="${o.correct?1:0}">${esc(o.label)}</button>`).join('')}
+      <div class="feedback" id="quizFeedback"></div>
+    </div>
+  `;
+
+  wrap.querySelectorAll('.quiz-option').forEach(btn => {
+    btn.onclick = () => {
+      if(state.quizAnswered) return;
+      state.quizAnswered = true;
+      const isRight = btn.dataset.correct === '1';
+
+      wrap.querySelectorAll('.quiz-option').forEach(b => {
+        b.disabled = true;
+        if(b.dataset.correct === '1') b.classList.add('correct');
+        else if(b === btn) b.classList.add('wrong');
+      });
+
+      const fb = wrap.querySelector('#quizFeedback');
+      if(isRight){
+        setStatus(cur.mod, cur.dom, it.term, STATUS.MASTERED);
+        fb.innerHTML = `<div class="ok">✅ 正确</div><div class="exp">${esc(it.example)}</div>`;
+      } else {
+        setStatus(cur.mod, cur.dom, it.term, STATUS.LEARNING);
+        fb.innerHTML = `<div class="no">❌ 正确答案：${esc(correct)}</div><div class="exp">${esc(it.example)}</div>`;
+      }
+
+      setTimeout(() => { state.qi++; state.quizAnswered = false; renderQuizTab(); }, isRight ? 900 : 1800);
+    };
+  });
+}
+
+function renderSpellQuestion(wrap, cur, it, dir){
+  const prompt = dir === 'en-zh' ? it.zh : it.term;
+  const hint = dir === 'en-zh'
+    ? (it.pos ? esc(it.pos) + ' · 请拼写英文术语' : '请拼写英文术语')
+    : (it.pos ? esc(it.pos) + ' · 请填写中文释义' : '请填写中文释义');
+  const correct = dir === 'en-zh' ? it.term : it.zh;
+
+  wrap.innerHTML = `
+    <div style="text-align:right;font-size:12.5px;color:var(--muted);margin-bottom:6px;">${state.qi + 1} / ${state.queue.length}</div>
+    <div class="quiz-card">
+      <div class="quiz-prompt">${esc(prompt)}</div>
+      <div class="quiz-hint">${hint}</div>
+      <div class="quiz-input-wrap">
+        <input class="quiz-input" id="spellInput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${dir==='en-zh'?'输入英文':'输入中文'}">
+        <button class="btn btn-primary quiz-submit" id="spellSubmit">提交</button>
+      </div>
+      <div class="feedback" id="quizFeedback"></div>
+    </div>
+  `;
+
+  const input = wrap.querySelector('#spellInput');
+  const btn = wrap.querySelector('#spellSubmit');
+  const fb = wrap.querySelector('#quizFeedback');
+  input.focus();
+
+  const submit = () => {
+    if(state.quizAnswered) return;
+    state.quizAnswered = true;
+    const isRight = isSpellCorrect(it, dir, input.value);
+    input.disabled = true;
+    btn.disabled = true;
+
+    if(isRight){
+      setStatus(cur.mod, cur.dom, it.term, STATUS.MASTERED);
+      fb.innerHTML = `<div class="ok">✅ 正确：${esc(correct)}</div><div class="exp">${esc(it.example)}</div>`;
+    } else {
+      setStatus(cur.mod, cur.dom, it.term, STATUS.LEARNING);
+      fb.innerHTML = `<div class="no">❌ 正确答案：${esc(correct)}</div><div class="exp">你的输入：${esc(input.value || '（空）')}<br>${esc(it.example)}</div>`;
+    }
+    setTimeout(() => { state.qi++; state.quizAnswered = false; renderQuizTab(); }, isRight ? 900 : 2200);
+  };
+
+  btn.onclick = submit;
+  input.addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); submit(); } });
+}
+
+/* =========================================================
+   词表
+   ========================================================= */
+function renderListTab(){
+  const wrap = document.getElementById('tabContent');
+  const mod = state.module, dom = state.domain;
+  const mode = state.listMode;
+
+  if(dom === '__ALL__'){
+    let html = '';
+    Object.keys(DATA[mod].domains).forEach(d => {
+      const items = DATA[mod].domains[d];
+      html += `<div class="group-title">${esc(d)} · ${items.length} 词</div>`;
+      html += `<div class="card" style="padding:4px 16px;">${items.map((it, i) => wordRow(mod, d, it, i, mode)).join('')}</div>`;
+    });
+    wrap.innerHTML = html;
+  } else {
+    const items = DATA[mod].domains[dom];
+    wrap.innerHTML = `<div class="card" style="padding:6px 16px;">${items.map((it, i) => wordRow(mod, dom, it, i, mode)).join('')}</div>`;
+  }
+
+  wrap.querySelectorAll('.word-item').forEach(row => {
+    row.onclick = () => {
+      const m = row.dataset.mod, d = row.dataset.dom, t = row.dataset.term;
+      cycleStatus(m, d, t);
+      renderListTab();
+    };
+  });
+}
+
+function wordRow(mod, dom, it, i, mode){
+  const st = getStatus(mod, dom, it.term);
+  return `
+    <div class="word-item" data-mod="${escAttr(mod)}" data-dom="${escAttr(dom)}" data-term="${escAttr(it.term)}">
+      <span class="word-num">${i + 1}</span>
+      <span class="word-text">${renderWordText(it, mode)}</span>
+      <span class="word-status ${st}"></span>
+    </div>
+  `;
+}
+
+function renderWordText(it, mode){
+  if(mode === 'en-zh') return `<span class="en">${esc(it.term)}</span><span class="sep">·</span><span class="zh">${esc(it.zh)}</span>`;
+  if(mode === 'zh-en') return `<span class="en">${esc(it.zh)}</span><span class="sep">·</span><span class="zh">${esc(it.term)}</span>`;
+  if(mode === 'en')    return `<span class="en">${esc(it.term)}</span>`;
+  return `<span class="en">${esc(it.zh)}</span>`;
+}
+
+/* =========================================================
+   完成块 & 队列
+   ========================================================= */
+function finishBlock(msg){
+  return `
+    <div class="hero" style="margin-top:26px;">
+      <h1 style="font-size:20px;">${msg}</h1>
+      <p>可以切换其他模式，或返回领域列表。</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;max-width:320px;margin:0 auto;">
+      <button class="btn btn-primary btn-block" id="again">再练一遍</button>
+      <button class="btn btn-ghost btn-block" id="toList">查看词表</button>
+      <button class="btn btn-ghost btn-block" id="backHome">返回首页</button>
+    </div>
+  `;
+}
+function bindFinish(wrap){
+  const again = wrap.querySelector('#again');
+  if(again) again.onclick = () => { buildQueue(); state.qi = 0; state.flipped = false; state.quizAnswered = false; renderLearn(); };
+  const toList = wrap.querySelector('#toList');
+  if(toList) toList.onclick = () => { state.tab = 'list'; renderLearn(); };
+  const bh = wrap.querySelector('#backHome');
+  if(bh) bh.onclick = renderHome;
+}
+
+function buildQueue(){
+  const mod = state.module, dom = state.domain;
+  const list = getAllItems(mod, dom);
+  const order = { [STATUS.NEW]: 0, [STATUS.LEARNING]: 1, [STATUS.MASTERED]: 2 };
+  state.queue = list.slice().sort((a, b) => {
+    return order[getStatus(a.mod, a.dom, a.item.term)] - order[getStatus(b.mod, b.dom, b.item.term)];
+  });
+}
+
+renderHome();
+</script>
+</body>
+</html>
